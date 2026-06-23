@@ -564,16 +564,16 @@
             <input type="text" id="loginName" placeholder="First Last">
           </div>
           <div class="field-group">
-            <label>Date of Birth</label>
-            <input type="date" id="loginDOB">
-          </div>
-          <div class="field-group">
             <label>Email Address</label>
             <input type="email" id="loginEmail" placeholder="your@email.com">
           </div>
           <div class="field-group">
+            <label>Last 4 of Social Security Number</label>
+            <input type="password" id="loginSSN" placeholder="••••" maxlength="4" style="letter-spacing:0.2em;">
+          </div>
+          <div class="field-group">
             <label>Case Number</label>
-            <input type="text" id="loginCase" placeholder="00030730364-01-01">
+            <input type="text" id="loginCase" placeholder="e.g. 00012345678-01-01">
           </div>
         </div>
         <div id="adminLoginFields" style="display:none;">
@@ -695,11 +695,11 @@ let submissions = [];
 
 // Demo submissions pre-loaded for admin view
 const demoSubmissions = [
-  { id: 1, date: getTodayStr(), participant: 'J. Smith', email: 'j.smith@email.com', dob: '1990-03-15', caseNum: '00023456789-01-01', company: 'Salesforce', companyScreenshot: 'Salesforce', position: 'Field Marketing Manager', status: 'match', adminAction: null },
-  { id: 2, date: getTodayStr(), participant: 'M. Johnson', email: 'm.johnson@email.com', dob: '1988-07-22', caseNum: '00034567890-01-01', company: 'Google', companyScreenshot: 'Google LLC', position: 'Marketing Coordinator', status: 'review', adminAction: null },
-  { id: 3, date: getTodayStr(), participant: 'T. Williams', email: 't.williams@email.com', dob: '1995-11-08', caseNum: '00045678901-01-01', company: 'Amazon', companyScreenshot: 'Walmart', position: 'Events Manager', status: 'mismatch', adminAction: null },
-  { id: 4, date: getTodayStr(), participant: 'R. Davis', email: 'r.davis@email.com', dob: '1992-05-30', caseNum: '00056789012-01-01', company: 'Microsoft', companyScreenshot: 'Microsoft', position: 'Sr Field Marketing Mgr', status: 'match', adminAction: null },
-  { id: 5, date: getTodayStr(), participant: 'K. Brown', email: 'k.brown@email.com', dob: '1987-09-14', caseNum: '00067890123-01-01', company: 'HubSpot', companyScreenshot: '⚠ Duplicate image (06/15)', position: 'Demand Gen Manager', status: 'duplicate', adminAction: null },
+  { id: 1, date: getTodayStr(), participant: 'J. Smith', email: 'j.smith@email.com', caseNum: '00023456789-01-01', company: 'Salesforce', companyScreenshot: 'Salesforce', position: 'Field Marketing Manager', status: 'match', adminAction: null },
+  { id: 2, date: getTodayStr(), participant: 'M. Johnson', email: 'm.johnson@email.com', caseNum: '00034567890-01-01', company: 'Google', companyScreenshot: 'Google LLC', position: 'Marketing Coordinator', status: 'review', adminAction: null },
+  { id: 3, date: getTodayStr(), participant: 'T. Williams', email: 't.williams@email.com', caseNum: '00045678901-01-01', company: 'Amazon', companyScreenshot: 'Walmart', position: 'Events Manager', status: 'mismatch', adminAction: null },
+  { id: 4, date: getTodayStr(), participant: 'R. Davis', email: 'r.davis@email.com', caseNum: '00056789012-01-01', company: 'Microsoft', companyScreenshot: 'Microsoft', position: 'Sr Field Marketing Mgr', status: 'match', adminAction: null },
+  { id: 5, date: getTodayStr(), participant: 'K. Brown', email: 'k.brown@email.com', caseNum: '00067890123-01-01', company: 'HubSpot', companyScreenshot: '⚠ Duplicate image (06/15)', position: 'Demand Gen Manager', status: 'duplicate', adminAction: null },
 ];
 
 function getTodayStr() {
@@ -740,17 +740,17 @@ function handleLogin() {
   }
 
   const name = document.getElementById('loginName').value.trim();
-  const dob = document.getElementById('loginDOB').value;
   const email = document.getElementById('loginEmail').value.trim();
+  const ssn = document.getElementById('loginSSN').value.trim();
   const caseNum = document.getElementById('loginCase').value.trim();
 
-  if (!name || !dob || !caseNum) {
+  if (!name || !caseNum) {
     err.textContent = 'Please fill in your name, date of birth, and case number.';
     err.style.display = 'block';
     return;
   }
 
-  currentUser = { name, dob, email, caseNum, role: 'participant' };
+  currentUser = { name, email, ssn, caseNum, role: 'participant' };
   showView('participantView');
   document.getElementById('userPill').textContent = name;
   document.getElementById('userPill').style.display = 'inline';
@@ -764,7 +764,7 @@ function logout() {
   document.getElementById('userPill').style.display = 'none';
   document.getElementById('logoutBtn').style.display = 'none';
   document.getElementById('loginName').value = '';
-  document.getElementById('loginDOB').value = '';
+  document.getElementById('loginSSN').value = '';
   document.getElementById('loginCase').value = '';
   document.getElementById('adminUser').value = '';
   document.getElementById('adminPass').value = '';
@@ -887,7 +887,6 @@ async function submitForm() {
       date: getTodayStr(),
       participant: currentUser.name,
       email: currentUser.email || '',
-      dob: currentUser.dob || '',
       caseNum: currentUser.caseNum,
       company,
       companyScreenshot: null,
@@ -1062,7 +1061,6 @@ const ALL_COLUMNS = [
   { key: 'date',              label: 'Date' },
   { key: 'participant',       label: 'Full Name' },
   { key: 'email',             label: 'Email' },
-  { key: 'dob',               label: 'Date of Birth' },
   { key: 'caseNum',           label: 'Case Number' },
   { key: 'company',           label: 'Company (Typed)' },
   { key: 'companyScreenshot', label: 'Company (Screenshot)' },
