@@ -667,6 +667,7 @@
       </select>
       <input type="text" id="filterSearch" placeholder="Search participant..." oninput="renderAdmin()">
       <button onclick="runAllAIChecks()" style="padding:7px 14px;background:var(--navy);color:white;border:none;border-radius:5px;font-size:13px;font-weight:600;cursor:pointer;">Run AI Check on All</button>
+      <button onclick="loadDemoResults()" style="padding:7px 14px;background:#7C3AED;color:white;border:none;border-radius:5px;font-size:13px;font-weight:600;cursor:pointer;">▶ Simulate AI Results</button>
       <button onclick="openExportModal()" style="padding:7px 14px;background:var(--green);color:white;border:none;border-radius:5px;font-size:13px;font-weight:600;cursor:pointer;">⬇ Export Data</button>
     </div>
 
@@ -695,11 +696,11 @@ let submissions = [];
 
 // Demo submissions pre-loaded for admin view
 const demoSubmissions = [
-  { id: 1, date: getTodayStr(), participant: 'J. Smith', email: 'j.smith@email.com', caseNum: '00023456789-01-01', company: 'Salesforce', companyScreenshot: 'Salesforce', position: 'Field Marketing Manager', status: 'match', adminAction: null },
-  { id: 2, date: getTodayStr(), participant: 'M. Johnson', email: 'm.johnson@email.com', caseNum: '00034567890-01-01', company: 'Google', companyScreenshot: 'Google LLC', position: 'Marketing Coordinator', status: 'review', adminAction: null },
-  { id: 3, date: getTodayStr(), participant: 'T. Williams', email: 't.williams@email.com', caseNum: '00045678901-01-01', company: 'Amazon', companyScreenshot: 'Walmart', position: 'Events Manager', status: 'mismatch', adminAction: null },
-  { id: 4, date: getTodayStr(), participant: 'R. Davis', email: 'r.davis@email.com', caseNum: '00056789012-01-01', company: 'Microsoft', companyScreenshot: 'Microsoft', position: 'Sr Field Marketing Mgr', status: 'match', adminAction: null },
-  { id: 5, date: getTodayStr(), participant: 'K. Brown', email: 'k.brown@email.com', caseNum: '00067890123-01-01', company: 'HubSpot', companyScreenshot: '⚠ Duplicate image (06/15)', position: 'Demand Gen Manager', status: 'duplicate', adminAction: null },
+  { id: 1, date: getTodayStr(), participant: 'J. Smith', email: 'j.smith@email.com', caseNum: '00023456789-01-01', company: 'Salesforce', companyScreenshot: null, position: 'Field Marketing Manager', status: 'pending', adminAction: null, file: null },
+  { id: 2, date: getTodayStr(), participant: 'M. Johnson', email: 'm.johnson@email.com', caseNum: '00034567890-01-01', company: 'Google', companyScreenshot: null, position: 'Marketing Coordinator', status: 'pending', adminAction: null, file: null },
+  { id: 3, date: getTodayStr(), participant: 'T. Williams', email: 't.williams@email.com', caseNum: '00045678901-01-01', company: 'Amazon', companyScreenshot: null, position: 'Events Manager', status: 'pending', adminAction: null, file: null },
+  { id: 4, date: getTodayStr(), participant: 'R. Davis', email: 'r.davis@email.com', caseNum: '00056789012-01-01', company: 'Microsoft', companyScreenshot: null, position: 'Sr Field Marketing Mgr', status: 'pending', adminAction: null, file: null },
+  { id: 5, date: getTodayStr(), participant: 'K. Brown', email: 'k.brown@email.com', caseNum: '00067890123-01-01', company: 'HubSpot', companyScreenshot: null, position: 'Demand Gen Manager', status: 'pending', adminAction: null, file: null },
 ];
 
 function getTodayStr() {
@@ -1209,6 +1210,25 @@ function doExport() {
   a.click();
   URL.revokeObjectURL(url);
   document.getElementById('exportModal').style.display = 'none';
+}
+
+function loadDemoResults() {
+  // Simulate what AI would return for the demo submissions
+  const demoResults = [
+    { id: 1, companyScreenshot: 'Salesforce', status: 'match' },
+    { id: 2, companyScreenshot: 'Google LLC', status: 'review' },
+    { id: 3, companyScreenshot: 'Walmart', status: 'mismatch' },
+    { id: 4, companyScreenshot: 'Microsoft', status: 'match' },
+    { id: 5, companyScreenshot: '⚠ Duplicate image detected (06/15/2026)', status: 'duplicate' },
+  ];
+  demoResults.forEach(r => {
+    const s = submissions.find(s => s.id === r.id);
+    if (s) {
+      s.companyScreenshot = r.companyScreenshot;
+      s.status = r.status;
+    }
+  });
+  renderAdmin();
 }
 
 // Enter key on login
